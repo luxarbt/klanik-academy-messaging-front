@@ -25,6 +25,12 @@ export default function Login() {
         token: loginRes.data.token,
         user: loginRes.data.user,
       })
+
+      if (undefined !== loginRes.data.token) {
+        Axios.get("http://localhost:9000/users/all").then((response) => {
+          localStorage.setItem("users", JSON.stringify(response.data))
+        })
+      }
       localStorage.setItem("auth-token", loginRes.data.token)
       history.push("/")
     } catch (err) {
