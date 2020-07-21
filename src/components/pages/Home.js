@@ -1,13 +1,10 @@
 import React, { useContext } from "react"
 import { Link } from "react-router-dom"
 import UserContext from "../../context/UserContext"
+import Search from "../search/search"
 
 export default function Home() {
   const { userData } = useContext(UserContext)
-
-  const users = JSON.parse(localStorage.getItem("users"))
-  // eslint-disable-next-line no-underscore-dangle
-  const userLoggedId = userData.user ? userData.user._id : null
 
   return (
     <div className="page">
@@ -16,20 +13,6 @@ export default function Home() {
           <h1>
             Welcome {userData.user.name} {userData.user.surname}
           </h1>
-          <h2>List users : </h2>
-          <ul>
-            {users.map((item) => {
-              // eslint-disable-next-line no-underscore-dangle
-              if (item._id !== userLoggedId) {
-                return (
-                  <li>
-                    {item.name} {item.surname}
-                  </li>
-                )
-              }
-              return ""
-            })}
-          </ul>
         </>
       ) : (
         <>
@@ -37,6 +20,8 @@ export default function Home() {
           <Link to="/login">Log in</Link>
         </>
       )}
+
+      <Search />
     </div>
   )
 }

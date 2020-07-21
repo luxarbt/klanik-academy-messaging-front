@@ -27,7 +27,7 @@ export default function Login() {
       })
 
       if (undefined !== loginRes.data.token) {
-        Axios.get("http://localhost:9000/users/all").then((response) => {
+        await Axios.get("http://localhost:9000/users/all").then((response) => {
           localStorage.setItem("users", JSON.stringify(response.data))
         })
       }
