@@ -27,18 +27,24 @@ export const Users = ({users}) => {
     <div>
       <h3>Users : </h3>
       <ul>
-        {users.map((user) => (
-          <li>
-            {user.name} {user.surname}
-            <input
-              type="button"
-              className="btn btn-primary btn-block"
-              value="Request chat"
-              data-user={JSON.stringify(user)}
-              onClick={sendChatRequest}
-            />
-          </li>
-        ))}
+        {users.map((user) =>
+          userData.user && userData.user._id !== user._id ? (
+            <>
+              <li>
+                {user.name} {user.surname}
+                <input
+                  type="button"
+                  className="btn btn-primary btn-block"
+                  value="Request chat"
+                  data-user={JSON.stringify(user)}
+                  onClick={sendChatRequest}
+                />
+              </li>
+            </>
+          ) : (
+            ""
+          )
+        )}
       </ul>
     </div>
   )
