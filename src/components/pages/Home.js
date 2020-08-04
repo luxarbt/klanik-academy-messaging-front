@@ -1,32 +1,11 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import Axios from "axios"
 import UserContext from "../../context/UserContext"
 import Search from "../search/search"
+import RequestingChatUsers from "../list/requestingChatUsers"
 
 export default function Home() {
   const { userData } = useContext(UserContext)
-
-  const [requests, setRequests] = useState([])
-  useEffect(() => {
-    if (undefined !== userData.data) {
-      const getRequests = async () => {
-        const result = await Axios.get(
-          "http://localhost:9000/chat/requestget",
-          {
-            params: {
-              userRequested: userData.user._id,
-            },
-          }
-        ).then((response) => setRequests(response.data))
-      }
-      getRequests()
-    }
-  })
-
-  const toto = requests.map((request) => {
-    return request
-  })
 
   return (
     <div className="page">
@@ -44,6 +23,7 @@ export default function Home() {
       )}
 
       <Search />
+      <RequestingChatUsers />
     </div>
   )
 }
