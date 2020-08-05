@@ -1,12 +1,12 @@
 /* eslint-disable import/prefer-default-export */
-import React, { useContext } from "react"
-import Axios from "axios"
-import UserContext from "../../context/UserContext"
+import React, { useContext } from "react";
+import Axios from "axios";
+import UserContext from "../../context/UserContext";
 
 export const Users = ({users}) => {
-  const { userData } = useContext(UserContext)
+  const { userData } = useContext(UserContext);
 
-  const currentUser = undefined !== userData.user ? userData.user : ""
+  const currentUser = undefined !== userData.user ? userData.user : "";
 
   const sendChatRequest = async (e) => {
     try {
@@ -14,14 +14,14 @@ export const Users = ({users}) => {
         userRequesting: currentUser,
         userRequested: JSON.parse(e.target.dataset.user),
         status: "pending",
-      }
-      await Axios.post("http://localhost:9000/chat/newrequest", newChatRequest)
+      };
+      await Axios.post("http://localhost:9000/chat/newrequest", newChatRequest);
 
       // TODO : Send notification
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   return (
     <div>
@@ -47,5 +47,5 @@ export const Users = ({users}) => {
         )}
       </ul>
     </div>
-  )
-}
+  );
+};

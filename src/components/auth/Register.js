@@ -1,29 +1,29 @@
-import React, { useState } from "react"
-import { useHistory } from "react-router-dom"
-import Axios from "axios"
-import ErrorNotice from "../misc/ErrorNotice"
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import Axios from "axios";
+import ErrorNotice from "../misc/ErrorNotice";
 
 export default function Register() {
-  const [email, setEmail] = useState()
-  const [password, setPassword] = useState()
-  const [passwordCheck, setPasswordCheck] = useState()
-  const [name, setName] = useState()
-  const [surname, setSurname] = useState()
-  const [error, setError] = useState()
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [passwordCheck, setPasswordCheck] = useState();
+  const [name, setName] = useState();
+  const [surname, setSurname] = useState();
+  const [error, setError] = useState();
 
-  const history = useHistory()
+  const history = useHistory();
 
   const submit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      const newUser = { email, password, passwordCheck, name, surname }
-      await Axios.post("http://localhost:9000/users/register", newUser)
-      history.push("/")
+      const newUser = { email, password, passwordCheck, name, surname };
+      await Axios.post("http://localhost:9000/users/register", newUser);
+      history.push("/");
     } catch (err) {
-      err.response.data.msg && setError(err.response.data.msg)
+      err.response.data.msg && setError(err.response.data.msg);
     }
-  }
+  };
 
   return (
     <div className="page">
@@ -97,5 +97,5 @@ export default function Register() {
         />
       </form>
     </div>
-  )
+  );
 }

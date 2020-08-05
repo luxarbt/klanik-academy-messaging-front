@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useContext } from "react"
-import Axios from "axios"
-import UserContext from "../../context/UserContext"
+import React, { useState, useEffect, useContext } from "react";
+import Axios from "axios";
+import UserContext from "../../context/UserContext";
 
 export default function RequestingChatUsers() {
-  const { userData } = useContext(UserContext)
+  const { userData } = useContext(UserContext);
 
-  const [users, setUsers] = useState([])
-  const [requestChat, setRequestChat] = useState()
+  const [users, setUsers] = useState([]);
+  const [requestChat, setRequestChat] = useState();
 
   const apiCall = async () => {
     Axios.get("http://localhost:9000/chat/requestget", {
       params: { userRequested: userData },
     }).then((response) => {
-      setRequestChat(response.data)
+      setRequestChat(response.data);
       response.data.map(async (request) => {
         try {
           const usersRequesting = await Axios.get(
@@ -20,53 +20,53 @@ export default function RequestingChatUsers() {
             {
               params: { user: request.userRequesting },
             }
-          )
-          setUsers([usersRequesting])
-          return usersRequesting
+          );
+          setUsers([usersRequesting]);
+          return usersRequesting;
         } catch (err) {
-          return console.log(err)
+          return console.log(err);
         }
-      })
-    })
-  }
+      });
+    });
+  };
 
   useEffect(() => {
-    apiCall()
-  }, [userData])
+    apiCall();
+  }, [userData]);
 
   const sendChatUpdate = async () => {
     try {
       const acceptChatRequest = {
         chatRequestId: requestChat[0]._id,
         status: "accepted",
-      }
+      };
       await Axios.put(
         "http://localhost:9000/chat/updaterequest",
         acceptChatRequest
-      )
+      );
 
       // TODO : Send notification
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const sendChatUpdateDecline = async () => {
     try {
       const declineChatRequest = {
         chatRequestId: requestChat[0]._id,
         status: "declined",
-      }
+      };
       await Axios.put(
         "http://localhost:9000/chat/updaterequest",
         declineChatRequest
-      )
+      );
 
       // TODO : Send notification
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   return (
     <div>
@@ -91,5 +91,5 @@ export default function RequestingChatUsers() {
         ))}
       </p>
     </div>
-  )
+  );
 }

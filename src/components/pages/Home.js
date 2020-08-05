@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import UserContext from "../../context/UserContext"
-import Search from "../search/search"
-import RequestingChatUsers from "../list/requestingChatUsers"
+import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import UserContext from "../../context/UserContext";
+import Search from "../search/search";
+import RequestingChatUsers from "../list/requestingChatUsers";
 
 export default function Home() {
-  const { userData } = useContext(UserContext)
+  const { userData } = useContext(UserContext);
 
   return (
     <div className="page">
@@ -25,5 +25,5 @@ export default function Home() {
       <Search />
       <RequestingChatUsers />
     </div>
-  )
+  );
 }

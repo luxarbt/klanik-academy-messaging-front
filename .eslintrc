@@ -11,11 +11,11 @@
       "prettier"
     ],
     "rules": {
-      "semi": 0,
+      "semi": 1,
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "prettier/prettier": [
         "error", {
-          "semi": false
+          "semi": true
         }
       ]
     }

@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 export default function ErrorNotice(props) {
   return (
@@ -8,5 +8,5 @@ export default function ErrorNotice(props) {
         X
       </button>
     </div>
-  )
+  );
 }
