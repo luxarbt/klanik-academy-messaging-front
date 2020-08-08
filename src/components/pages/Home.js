@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import UserContext from "../../context/UserContext";
-import Search from "../search/search";
-import RequestingChatUsers from "../list/requestingChatUsers";
+import Sidebar from "../sidebar/Sidebar";
 
 export default function Home() {
   const { userData } = useContext(UserContext);
@@ -14,6 +13,7 @@ export default function Home() {
           <h1>
             Welcome {userData.user.name} {userData.user.surname}
           </h1>
+          <Sidebar />
         </>
       ) : (
         <>
@@ -21,9 +21,6 @@ export default function Home() {
           <Link to="/login">Log in</Link>
         </>
       )}
-
-      <Search />
-      <RequestingChatUsers />
     </div>
   );
 }
