@@ -1,15 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import { Filter } from "./filter";
 import { Users } from "./users";
+import UserContext from "../../context/UserContext";
+
 
 export default function Search() {
   const [word, setWord] = useState("");
   const [users, setUsers] = useState([]);
+
+  const { userData } = useContext(UserContext);
+  const currentUser = userData.user || "";
+
   useEffect(() => {
     const getUsers = async () => {
       const result = await Axios.get("http://localhost:9000/users/all");
-      setUsers(result.data);
+      const resultFiltered = result.data.filter((user) => user._id !== currentUser._id);
+      setUsers(resultFiltered);
     };
 
     getUsers();
