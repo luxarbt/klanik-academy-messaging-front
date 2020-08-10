@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
+import socket from "socket.io-client";
 import UserContext from "../../context/UserContext";
 
 export const Users = ({users}) => {
@@ -15,7 +16,15 @@ export const Users = ({users}) => {
         userRequested: JSON.parse(e.target.dataset.user),
         status: "pending",
       };
-      await Axios.post("http://localhost:9000/chat/newrequest", newChatRequest);
+      await Axios.post(
+        "http://localhost:9000/chat/newrequest",
+        newChatRequest
+      ).then((response) => {
+        socket.connect("http://localhost:8080");
+        socket.emit("chat_request", () => {
+          console.log("test");
+        });
+      });
 
       // TODO : Send notification
     } catch (err) {
