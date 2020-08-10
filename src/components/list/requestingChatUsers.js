@@ -6,13 +6,12 @@ export default function RequestingChatUsers() {
   const { userData } = useContext(UserContext);
 
   const [users, setUsers] = useState([]);
-  const [requestChat, setRequestChat] = useState();
 
   const apiCall = async () => {
     Axios.get("http://localhost:9000/chat/requestget", {
       params: { userRequested: userData },
     }).then((response) => {
-      setRequestChat(response.data);
+      const array = [];
       response.data.map(async (request) => {
         try {
           const usersRequesting = await Axios.get(
@@ -21,7 +20,10 @@ export default function RequestingChatUsers() {
               params: { user: request.userRequesting },
             }
           );
-          setUsers([usersRequesting]);
+          usersRequesting.data.status = request.status;
+          usersRequesting.data.requestId = request._id;
+          array.push(usersRequesting);
+          setUsers([array]);
           return usersRequesting;
         } catch (err) {
           return console.log(err);
@@ -34,10 +36,10 @@ export default function RequestingChatUsers() {
     apiCall();
   }, [userData]);
 
-  const sendChatUpdate = async () => {
+  const sendChatUpdate = async (e) => {
     try {
       const acceptChatRequest = {
-        chatRequestId: requestChat[0]._id,
+        chatRequestId: e.target.dataset.id,
         status: "accepted",
       };
       await Axios.put(
@@ -51,10 +53,10 @@ export default function RequestingChatUsers() {
     }
   };
 
-  const sendChatUpdateDecline = async () => {
+  const sendChatUpdateDecline = async (e) => {
     try {
       const declineChatRequest = {
-        chatRequestId: requestChat[0]._id,
+        chatRequestId: e.target.dataset.id,
         status: "declined",
       };
       await Axios.put(
@@ -70,25 +72,31 @@ export default function RequestingChatUsers() {
 
   return (
     <div>
-      Requêtes de chat reçues :
+      Chat requests received :
       <p>
-        {users.map((user) => (
-          <>
-            {user.data.name} {user.data.surname}
-            <input
-              type="button"
-              className="btn btn-primary btn-block"
-              value="Accept"
-              onClick={sendChatUpdate}
-            />
-            <input
-              type="button"
-              className="btn btn-primary btn-block"
-              value="Decline"
-              onClick={sendChatUpdateDecline}
-            />
-          </>
-        ))}
+        {users[0]
+          ? users[0]
+              .filter((user) => user.data.status === "pending")
+              .map((user) => (
+                <>
+                  {user.data.name} {user.data.surname}
+                  <input
+                    type="button"
+                    className="btn btn-primary btn-block"
+                    data-id={user.data.requestId}
+                    value="Accept"
+                    onClick={sendChatUpdate}
+                  />
+                  <input
+                    type="button"
+                    className="btn btn-primary btn-block"
+                    data-id={user.data.requestId}
+                    value="Decline"
+                    onClick={sendChatUpdateDecline}
+                  />
+                </>
+              ))
+          : ""}
       </p>
     </div>
   );

@@ -15,7 +15,9 @@ export default function Search() {
   useEffect(() => {
     const getUsers = async () => {
       const result = await Axios.get("http://localhost:9000/users/all");
-      const resultFiltered = result.data.filter((user) => user._id !== currentUser._id);
+      const resultFiltered = result.data.filter(
+        (user) => user._id !== currentUser._id
+      );
       setUsers(resultFiltered);
     };
 
