@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import Sidebar from "../sidebar/Sidebar";
+import SidebarLeft from "../sidebar/SidebarLeft";
 
 export default function Home() {
   const { userData } = useContext(UserContext);
@@ -14,6 +15,7 @@ export default function Home() {
             Welcome {userData.user.name} {userData.user.surname}
           </h1>
           <Sidebar />
+          <SidebarLeft />
         </>
       ) : (
         <>

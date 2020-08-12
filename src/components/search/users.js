@@ -15,7 +15,21 @@ export const Users = ({users}) => {
         userRequested: JSON.parse(e.target.dataset.user),
         status: "pending",
       };
-      await Axios.post("http://localhost:9000/chat/newrequest", newChatRequest);
+      await Axios.post(
+        "http://localhost:9000/chat/newrequest",
+        newChatRequest
+      ).then((response) => {
+        let previouslocalstorage =
+          localStorage.getItem("userRequestedId") !== null
+            ? localStorage.getItem("userRequestedId")
+            : localStorage.setItem("userRequestedId", []);
+
+        previouslocalstorage = previouslocalstorage.getItem("userRequestedId");
+        console.log(previouslocalstorage)
+        const netlcoal = JSON.stringify({ id: response.data._id });
+        previouslocalstorage.push(netlcoal);
+        localStorage.setItem("userRequestedId", previouslocalstorage);
+      });
 
       // TODO : Send notification
     } catch (err) {
