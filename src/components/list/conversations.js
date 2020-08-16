@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
 import Axios from "axios";
 import UserContext from "../../context/UserContext";
 
@@ -45,7 +46,9 @@ export default function Conversations() {
               .filter((user) => user.data.status === "accepted")
               .map((user) => (
                 <>
-                  {user.data.name} {user.data.surname}
+                  <Link to={{ pathname: "/conv", state: user.data }}>
+                    {user.data.name} {user.data.surname}
+                  </Link>
                 </>
               ))
           : ""}

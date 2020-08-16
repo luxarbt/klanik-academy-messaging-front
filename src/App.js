@@ -6,6 +6,7 @@ import Home from "./components/pages/Home";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import UserContext from "./context/UserContext";
+import Conv from "./components/pages/Conv";
 
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./style.css";
@@ -49,15 +50,12 @@ export default function App() {
         <div className="App">
           <UserContext.Provider value={{ userData, setUserData }}>
             <Header />
-            <div className="auth-wrapper">
-              <div className="auth-inner">
-                <Switch>
-                  <Route exact path="/" component={Home} />
-                  <Route path="/login" component={Login} />
-                  <Route path="/register" component={Register} />
-                </Switch>
-              </div>
-            </div>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/login" component={Login} />
+              <Route path="/register" component={Register} />
+              <Route path="/conv" component={Conv} />
+            </Switch>
           </UserContext.Provider>
         </div>
       </BrowserRouter>

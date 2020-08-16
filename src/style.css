@@ -103,3 +103,10 @@ body, html, .App, #root, .auth-wrapper {
   overflow-x: hidden;
   padding-top: 20px;
 }
+
+#chat {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: left;
+}

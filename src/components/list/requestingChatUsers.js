@@ -6,6 +6,7 @@ export default function RequestingChatUsers() {
   const { userData } = useContext(UserContext);
 
   const [users, setUsers] = useState([]);
+  const [requestChatDisplay, setRequestChatDisplay] = useState([]);
 
   const apiCall = async () => {
     Axios.get("http://localhost:9000/chat/requestget", {
@@ -37,15 +38,20 @@ export default function RequestingChatUsers() {
   }, [userData]);
 
   const sendChatUpdate = async (e) => {
+    const chatRequestId = e.target.dataset.id;
     try {
       const acceptChatRequest = {
-        chatRequestId: e.target.dataset.id,
+        chatRequestId: chatRequestId,
         status: "accepted",
       };
       await Axios.put(
         "http://localhost:9000/chat/updaterequest",
         acceptChatRequest
       );
+      setRequestChatDisplay((arrayRequestChat) => [
+        ...arrayRequestChat,
+        chatRequestId,
+      ]);
 
       // TODO : Send notification
     } catch (err) {
@@ -54,15 +60,20 @@ export default function RequestingChatUsers() {
   };
 
   const sendChatUpdateDecline = async (e) => {
+    const chatRequestId = e.target.dataset.id;
     try {
       const declineChatRequest = {
-        chatRequestId: e.target.dataset.id,
+        chatRequestId: chatRequestId,
         status: "declined",
       };
       await Axios.put(
         "http://localhost:9000/chat/updaterequest",
         declineChatRequest
       );
+      setRequestChatDisplay((arrayRequestChat) => [
+        ...arrayRequestChat,
+        chatRequestId,
+      ]);
 
       // TODO : Send notification
     } catch (err) {
@@ -73,11 +84,18 @@ export default function RequestingChatUsers() {
   return (
     <div>
       Chat requests received :
-      <p>
-        {users[0]
-          ? users[0]
-              .filter((user) => user.data.status === "pending")
-              .map((user) => (
+      {users[0]
+        ? users[0]
+            .filter((user) => user.data.status === "pending")
+            .map((user) => (
+              <p
+                style={{
+                  display:
+                    requestChatDisplay.indexOf(user.data.requestId) !== -1
+                      ? "none"
+                      : "block",
+                }}
+              >
                 <>
                   {user.data.name} {user.data.surname}
                   <input
@@ -95,9 +113,9 @@ export default function RequestingChatUsers() {
                     onClick={sendChatUpdateDecline}
                   />
                 </>
-              ))
-          : ""}
-      </p>
+              </p>
+            ))
+        : ""}
     </div>
   );
 }
