@@ -12,7 +12,6 @@ export default function RequestingChatUsers() {
     Axios.get("http://localhost:9000/chat/requestget", {
       params: { userRequested: userData },
     }).then((response) => {
-      const array = [];
       response.data.map(async (request) => {
         try {
           const usersRequesting = await Axios.get(
@@ -23,8 +22,7 @@ export default function RequestingChatUsers() {
           );
           usersRequesting.data.status = request.status;
           usersRequesting.data.requestId = request._id;
-          array.push(usersRequesting);
-          setUsers([array]);
+          setUsers((arrayUsers) => [...arrayUsers, usersRequesting]);
           return usersRequesting;
         } catch (err) {
           return console.log(err);
@@ -84,8 +82,8 @@ export default function RequestingChatUsers() {
   return (
     <div>
       Chat requests received :
-      {users[0]
-        ? users[0]
+      {users
+        ? users
             .filter((user) => user.data.status === "pending")
             .map((user) => (
               <p
