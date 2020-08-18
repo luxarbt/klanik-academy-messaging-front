@@ -12,7 +12,6 @@ export default function Conversations() {
     Axios.get("http://localhost:9000/chat/requestget", {
       params: { userRequested: userData },
     }).then((response) => {
-      const array = [];
       response.data.map(async (request) => {
         try {
           const usersRequesting = await Axios.get(
@@ -23,8 +22,7 @@ export default function Conversations() {
           );
           usersRequesting.data.status = request.status;
           usersRequesting.data.requestId = request._id;
-          array.push(usersRequesting);
-          setUsers([array]);
+          setUsers((arrayUser) => [...arrayUser, usersRequesting]);
           return usersRequesting;
         } catch (err) {
           return console.log(err);
@@ -41,8 +39,8 @@ export default function Conversations() {
     <div>
       <p>Conversations : </p>
       <p>
-        {users[0]
-          ? users[0]
+        {users
+          ? users
               .filter((user) => user.data.status === "accepted")
               .map((user) => (
                 <>

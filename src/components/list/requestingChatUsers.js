@@ -37,15 +37,26 @@ export default function RequestingChatUsers() {
 
   const sendChatUpdate = async (e) => {
     const chatRequestId = e.target.dataset.id;
+    const firstUser = e.target.dataset.userIdrequesting;
+    const secondUser = e.target.dataset.userIdrequested;
+
     try {
       const acceptChatRequest = {
         chatRequestId: chatRequestId,
+        userRequesting: firstUser,
+        userRequested: secondUser,
         status: "accepted",
       };
       await Axios.put(
         "http://localhost:9000/chat/updaterequest",
         acceptChatRequest
       );
+      await Axios.post("http://localhost:9000/conversation/newconversation", {
+        params: {
+          firstUser: firstUser,
+          secondUser: secondUser,
+        },
+      });
       setRequestChatDisplay((arrayRequestChat) => [
         ...arrayRequestChat,
         chatRequestId,
@@ -100,6 +111,8 @@ export default function RequestingChatUsers() {
                     type="button"
                     className="btn btn-primary btn-block"
                     data-id={user.data.requestId}
+                    data-user-idRequested={user.data._id}
+                    data-user-idRequesting={userData.user._id}
                     value="Accept"
                     onClick={sendChatUpdate}
                   />

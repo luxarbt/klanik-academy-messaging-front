@@ -4,8 +4,7 @@ import UserContext from "../../context/UserContext";
 export default function Conversation({userRequested}) {
   const { userData } = useContext(UserContext);
 
-  console.log(userData.user);
-
+  console.log(userRequested)
   return (
     <div id="chat">
       <label htmlFor="message">
