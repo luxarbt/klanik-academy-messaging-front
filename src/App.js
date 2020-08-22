@@ -30,14 +30,18 @@ export default function App() {
         { headers: { "x-auth-token": token } }
       );
       if (tokenRes.data) {
-        const userRes = await Axios.get("http://localhost:9000/users/", {
-          headers: { "x-auth-token": token },
-        });
+        try {
+          const userRes = await Axios.get("http://localhost:9000/users/", {
+            headers: { "x-auth-token": token },
+          });
 
-        setUserData({
-          token,
-          user: userRes.data,
-        });
+          setUserData({
+            token,
+            user: userRes.data,
+          });
+        } catch (err) {
+          console.log(err);
+        }
       }
     };
 

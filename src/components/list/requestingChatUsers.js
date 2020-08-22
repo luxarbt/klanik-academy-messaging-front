@@ -21,7 +21,7 @@ export default function RequestingChatUsers() {
             }
           );
           usersRequesting.data.status = request.status;
-          usersRequesting.data.requestId = request._id;
+          usersRequesting.data.chatRequestId = request._id;
           setUsers((arrayUsers) => [...arrayUsers, usersRequesting]);
           return usersRequesting;
         } catch (err) {
@@ -100,7 +100,7 @@ export default function RequestingChatUsers() {
               <p
                 style={{
                   display:
-                    requestChatDisplay.indexOf(user.data.requestId) !== -1
+                    requestChatDisplay.indexOf(user.data.chatRequestId) !== -1
                       ? "none"
                       : "block",
                 }}
@@ -110,7 +110,7 @@ export default function RequestingChatUsers() {
                   <input
                     type="button"
                     className="btn btn-primary btn-block"
-                    data-id={user.data.requestId}
+                    data-id={user.data.chatRequestId}
                     data-user-idRequested={user.data._id}
                     data-user-idRequesting={userData.user._id}
                     value="Accept"
@@ -119,7 +119,7 @@ export default function RequestingChatUsers() {
                   <input
                     type="button"
                     className="btn btn-primary btn-block"
-                    data-id={user.data.requestId}
+                    data-id={user.data.chatRequestId}
                     value="Decline"
                     onClick={sendChatUpdateDecline}
                   />

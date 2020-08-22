@@ -21,7 +21,7 @@ export default function Conversations() {
             }
           );
           usersRequesting.data.status = request.status;
-          usersRequesting.data.requestId = request._id;
+          usersRequesting.data.chatRequestId = request._id;
           setUsers((arrayUser) => [...arrayUser, usersRequesting]);
           return usersRequesting;
         } catch (err) {
