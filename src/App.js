@@ -54,12 +54,16 @@ export default function App() {
         <div className="App">
           <UserContext.Provider value={{ userData, setUserData }}>
             <Header />
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/login" component={Login} />
-              <Route path="/register" component={Register} />
-              <Route path="/conv" component={Conv} />
-            </Switch>
+            <div className="auth-wrapper">
+              <div className="auth-inner">
+                <Switch>
+                  <Route exact path="/" component={Home} />
+                  <Route path="/login" component={Login} />
+                  <Route path="/register" component={Register} />
+                  <Route path="/conv" component={Conv} />
+                </Switch>
+              </div>
+            </div>
           </UserContext.Provider>
         </div>
       </BrowserRouter>
