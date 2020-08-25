@@ -8,30 +8,29 @@ export default function Conversations() {
 
   const [users, setUsers] = useState([]);
 
-  const apiCall = async () => {
-    Axios.get("http://localhost:9000/chat/requestget", {
-      params: { userRequested: userData },
-    }).then((response) => {
-      response.data.map(async (request) => {
-        try {
-          const usersRequesting = await Axios.get(
-            "http://localhost:9000/users/user",
-            {
-              params: { user: request.userRequesting },
-            }
-          );
-          usersRequesting.data.status = request.status;
-          usersRequesting.data.chatRequestId = request._id;
-          setUsers((arrayUser) => [...arrayUser, usersRequesting]);
-          return usersRequesting;
-        } catch (err) {
-          return console.log(err);
-        }
-      });
-    });
-  };
-
   useEffect(() => {
+    const apiCall = async () => {
+      Axios.get("http://localhost:9000/chat/requestget", {
+        params: { userRequested: userData },
+      }).then((response) => {
+        response.data.map(async (request) => {
+          try {
+            const usersRequesting = await Axios.get(
+              "http://localhost:9000/users/user",
+              {
+                params: { user: request.userRequesting },
+              }
+            );
+            usersRequesting.data.status = request.status;
+            usersRequesting.data.chatRequestId = request._id;
+            setUsers((arrayUser) => [...arrayUser, usersRequesting]);
+            return usersRequesting;
+          } catch (err) {
+            return console.log(err);
+          }
+        });
+      });
+    };
     apiCall();
   }, [userData]);
 

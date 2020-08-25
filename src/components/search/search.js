@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
-import { Filter } from "./filter";
-import { Users } from "./users";
+import Filter from "./filter";
+import Users from "./users";
 import UserContext from "../../context/UserContext";
-
 
 export default function Search() {
   const [word, setWord] = useState("");
@@ -22,7 +21,7 @@ export default function Search() {
     };
 
     getUsers();
-  }, []);
+  }, [currentUser._id]);
   const [filterDisplay, setFilterDisplay] = useState([]);
 
   const handleChange = (e) => {

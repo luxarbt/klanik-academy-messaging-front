@@ -8,30 +8,29 @@ export default function RequestingChatUsers() {
   const [users, setUsers] = useState([]);
   const [requestChatDisplay, setRequestChatDisplay] = useState([]);
 
-  const apiCall = async () => {
-    Axios.get("http://localhost:9000/chat/requestget", {
-      params: { userRequested: userData },
-    }).then((response) => {
-      response.data.map(async (request) => {
-        try {
-          const usersRequesting = await Axios.get(
-            "http://localhost:9000/users/user",
-            {
-              params: { user: request.userRequesting },
-            }
-          );
-          usersRequesting.data.status = request.status;
-          usersRequesting.data.chatRequestId = request._id;
-          setUsers((arrayUsers) => [...arrayUsers, usersRequesting]);
-          return usersRequesting;
-        } catch (err) {
-          return console.log(err);
-        }
-      });
-    });
-  };
-
   useEffect(() => {
+    const apiCall = async () => {
+      Axios.get("http://localhost:9000/chat/requestget", {
+        params: { userRequested: userData },
+      }).then((response) => {
+        response.data.map(async (request) => {
+          try {
+            const usersRequesting = await Axios.get(
+              "http://localhost:9000/users/user",
+              {
+                params: { user: request.userRequesting },
+              }
+            );
+            usersRequesting.data.status = request.status;
+            usersRequesting.data.chatRequestId = request._id;
+            setUsers((arrayUsers) => [...arrayUsers, usersRequesting]);
+            return usersRequesting;
+          } catch (err) {
+            return console.log(err);
+          }
+        });
+      });
+    };
     apiCall();
   }, [userData]);
 
@@ -42,7 +41,7 @@ export default function RequestingChatUsers() {
 
     try {
       const acceptChatRequest = {
-        chatRequestId: chatRequestId,
+        chatRequestId,
         userRequesting: firstUser,
         userRequested: secondUser,
         status: "accepted",
@@ -53,8 +52,8 @@ export default function RequestingChatUsers() {
       );
       await Axios.post("http://localhost:9000/conversation/newconversation", {
         params: {
-          firstUser: firstUser,
-          secondUser: secondUser,
+          firstUser,
+          secondUser,
         },
       });
       setRequestChatDisplay((arrayRequestChat) => [
@@ -72,7 +71,7 @@ export default function RequestingChatUsers() {
     const chatRequestId = e.target.dataset.id;
     try {
       const declineChatRequest = {
-        chatRequestId: chatRequestId,
+        chatRequestId,
         status: "declined",
       };
       await Axios.put(

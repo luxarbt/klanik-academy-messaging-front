@@ -1,9 +1,9 @@
-/* eslint-disable import/prefer-default-export */
 import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
+import PropTypes from "prop-types";
 import UserContext from "../../context/UserContext";
 
-export const Users = ({users}) => {
+export default function Users({ users }) {
   const { userData } = useContext(UserContext);
 
   const [displayUser, setDisplayUser] = useState([]);
@@ -73,4 +73,12 @@ export const Users = ({users}) => {
       </ul>
     </div>
   );
+}
+
+Users.propTypes = {
+  users: PropTypes.instanceOf(Array),
+};
+
+Users.defaultProps = {
+  users: [],
 };

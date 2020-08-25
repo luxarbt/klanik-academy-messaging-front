@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
+import PropTypes from "prop-types";
 import UserContext from "../../context/UserContext";
 
-export default function Conversation({userRequested}) {
+export default function Conversation({ userRequested }) {
+  console.log(userRequested);
   const { userData } = useContext(UserContext);
-
-  console.log(userRequested)
+  console.log(userData);
   return (
     <div id="chat">
       <label htmlFor="message">
@@ -20,3 +21,11 @@ export default function Conversation({userRequested}) {
     </div>
   );
 }
+
+Conversation.propTypes = {
+  userRequested: PropTypes.instanceOf(Object),
+};
+
+Conversation.defaultProps = {
+  userRequested: {},
+};

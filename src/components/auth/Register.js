@@ -21,7 +21,7 @@ export default function Register() {
       await Axios.post("http://localhost:9000/users/register", newUser);
       history.push("/");
     } catch (err) {
-      err.response.data.msg && setError(err.response.data.msg);
+      setError(err.response.data.msg);
     }
   };
 
