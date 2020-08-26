@@ -8,6 +8,7 @@ export default function Users({ users }) {
 
   const [displayUser, setDisplayUser] = useState([]);
   const [chatRequests, setChatRequests] = useState([]);
+  const [userAlreadyRequesting, setUserAlreadyRequesting] = useState([]);
 
   const currentUser = userData.user || "";
 
@@ -27,19 +28,26 @@ export default function Users({ users }) {
     }
   };
 
-  const getChatRequests = async () => {
-    await Axios.get("http://localhost:9000/chat/requests").then((response) => {
-      const arrayRequestId = [];
-      response.data.map((chatRequest) => {
-        return arrayRequestId.push(chatRequest.userRequested);
-      });
-      setChatRequests(arrayRequestId);
-    });
-  };
-
   useEffect(() => {
+    const getChatRequests = async () => {
+      await Axios.get("http://localhost:9000/chat/requests").then(
+        (response) => {
+          const arrayRequestId = [];
+          response.data.map((chatRequest) => {
+            if (currentUser._id === chatRequest.userRequested) {
+              setUserAlreadyRequesting((arrayUser) => [
+                ...arrayUser,
+                chatRequest.userRequesting,
+              ]);
+            }
+            return arrayRequestId.push(chatRequest.userRequested);
+          });
+          setChatRequests(arrayRequestId);
+        }
+      );
+    };
     getChatRequests();
-  }, []);
+  }, [currentUser._id]);
 
   return (
     <div>
@@ -53,7 +61,10 @@ export default function Users({ users }) {
                 <li
                   style={{
                     display:
-                      displayUser.indexOf(user._id) !== -1 ? "none" : "block",
+                      displayUser.indexOf(user._id) !== -1 ||
+                      userAlreadyRequesting.indexOf(user._id) !== -1
+                        ? "none"
+                        : "block",
                   }}
                 >
                   {user.name} {user.surname}
