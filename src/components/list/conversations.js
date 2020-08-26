@@ -10,44 +10,51 @@ export default function Conversations() {
 
   useEffect(() => {
     const apiCall = async () => {
-      Axios.get("http://localhost:9000/chat/requestget", {
-        params: { userRequested: userData },
-      }).then((response) => {
-        response.data.map(async (request) => {
-          try {
-            const usersRequesting = await Axios.get(
-              "http://localhost:9000/users/user",
-              {
-                params: { user: request.userRequesting },
-              }
-            );
-            usersRequesting.data.status = request.status;
-            usersRequesting.data.chatRequestId = request._id;
-            setUsers((arrayUser) => [...arrayUser, usersRequesting]);
-            return usersRequesting;
-          } catch (err) {
-            return console.log(err);
+      Axios.get("http://localhost:9000/conversation/all").then((response) => {
+        response.data.map(async (conversation) => {
+          if (conversation.firstUser === userData.user._id) {
+            try {
+              const usersRequesting = await Axios.get(
+                "http://localhost:9000/users/user",
+                {
+                  params: { user: conversation.secondUser },
+                }
+              );
+              setUsers((arrayUser) => [...arrayUser, usersRequesting]);
+            } catch (err) {
+              console.log(err);
+            }
+          } else if (conversation.secondUser === userData.user._id) {
+            try {
+              const usersRequesting = await Axios.get(
+                "http://localhost:9000/users/user",
+                {
+                  params: { user: conversation.firstUser },
+                }
+              );
+              setUsers((arrayUser) => [...arrayUser, usersRequesting]);
+            } catch (err) {
+              console.log(err);
+            }
           }
         });
       });
     };
     apiCall();
-  }, [userData]);
+  }, [userData.user._id]);
 
   return (
     <div>
       <p>Conversations : </p>
       <p>
         {users
-          ? users
-              .filter((user) => user.data.status === "accepted")
-              .map((user) => (
-                <>
-                  <Link to={{ pathname: "/conv", state: user.data }}>
-                    {user.data.name} {user.data.surname}
-                  </Link>
-                </>
-              ))
+          ? users.map((user) => (
+              <>
+                <Link to={{ pathname: "/conv", state: user.data }}>
+                  {user.data.name} {user.data.surname}
+                </Link>
+              </>
+            ))
           : ""}
       </p>
     </div>
