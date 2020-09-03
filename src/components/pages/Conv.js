@@ -11,7 +11,7 @@ export default function Conv() {
   const location = useLocation();
 
   return (
-    <div className="page">
+    <div>
       {userData.user ? (
         <>
           <Sidebar />

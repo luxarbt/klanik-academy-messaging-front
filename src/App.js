@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Axios from "axios";
+import io from "socket.io-client";
 import Header from "./components/layout/Header";
 import Home from "./components/pages/Home";
 import Login from "./components/auth/Login";
@@ -17,7 +18,12 @@ export default function App() {
     user: undefined,
   });
 
+  const socket = io("http://localhost:8080");
+
   useEffect(() => {
+    socket.on("connection", () => {
+      console.log("toot");
+    });
     const checkLoggedIn = async () => {
       let token = localStorage.getItem("auth-token");
       if (token === null) {
@@ -46,7 +52,7 @@ export default function App() {
     };
 
     checkLoggedIn();
-  }, []);
+  }, [socket]);
 
   return (
     <>
@@ -64,6 +70,7 @@ export default function App() {
                 </Switch>
               </div>
             </div>
+            <Switch />
           </UserContext.Provider>
         </div>
       </BrowserRouter>

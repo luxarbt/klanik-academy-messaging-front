@@ -20,6 +20,7 @@ export default function Conversations() {
                   params: { user: conversation.secondUser },
                 }
               );
+              usersRequesting.data.conversationId = conversation._id;
               setUsers((arrayUser) => [...arrayUser, usersRequesting]);
             } catch (err) {
               console.log(err);
@@ -32,6 +33,7 @@ export default function Conversations() {
                   params: { user: conversation.firstUser },
                 }
               );
+              usersRequesting.data.conversationId = conversation._id;
               setUsers((arrayUser) => [...arrayUser, usersRequesting]);
             } catch (err) {
               console.log(err);

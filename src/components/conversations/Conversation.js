@@ -1,23 +1,70 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { ChatFeed, Message } from "react-chat-ui";
+import Axios from "axios";
+import io from "socket.io-client";
 import UserContext from "../../context/UserContext";
 
 export default function Conversation({ userRequested }) {
   console.log(userRequested);
   const { userData } = useContext(UserContext);
-  console.log(userData);
+  const [message, setMessage] = useState();
+  const [messages, setMessages] = useState([]);
+
+  const socket = io.connect("http://localhost:8080");
+  useEffect(() => {
+    const getMessages = async () => {
+      Axios.get("http://localhost:9000/messages/get", {
+        params: {
+          conversation: userRequested.conversationId,
+        },
+      }).then((response) => {
+        response.data.map(async (msg) => {
+          setMessages((arrayMessages) => [
+            ...arrayMessages,
+            new Message({
+              id: msg.sender,
+              message: msg.message,
+              senderName: msg.sender,
+            }),
+          ]);
+        });
+      });
+    };
+    getMessages();
+  }, [userData.user._id, userRequested._id, userRequested.conversationId]);
+
+  const onMessageSubmit = async (e) => {
+    e.preventDefault();
+    const newMessage = {
+      sender: userData.user._id,
+      receiver: userRequested._id,
+      message,
+    };
+    Axios.post("http://localhost:9000/messages/send", newMessage);
+    socket.emit("message", message);
+  };
+
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+  };
+
   return (
-    <div id="chat">
-      <label htmlFor="message">
+    <div className="chatfeed-wrapper">
+      <ChatFeed
+        maxHeight={250}
+        messages={messages} // Boolean: list of message objects
+        showSenderName
+      />
+
+      <form onSubmit={(e) => onMessageSubmit(e)}>
         <input
-          type="text"
-          name="message"
-          id="message"
-          placeholder="Votre message..."
-          size="50"
+          name="send-message"
+          onChange={handleChange}
+          placeholder="Type a message..."
+          className="message-input"
         />
-      </label>
-      <input type="submit" id="send_message" value="Send" />
+      </form>
     </div>
   );
 }
