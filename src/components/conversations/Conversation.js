@@ -2,16 +2,13 @@ import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { ChatFeed, Message } from "react-chat-ui";
 import Axios from "axios";
-import io from "socket.io-client";
 import UserContext from "../../context/UserContext";
 
 export default function Conversation({ userRequested }) {
-  console.log(userRequested);
   const { userData } = useContext(UserContext);
   const [message, setMessage] = useState();
   const [messages, setMessages] = useState([]);
 
-  const socket = io.connect("http://localhost:8080");
   useEffect(() => {
     const getMessages = async () => {
       Axios.get("http://localhost:9000/messages/get", {
@@ -42,7 +39,7 @@ export default function Conversation({ userRequested }) {
       message,
     };
     Axios.post("http://localhost:9000/messages/send", newMessage);
-    socket.emit("message", message);
+    setMessages((arrayMessages) => [...arrayMessages, newMessage]);
   };
 
   const handleChange = (e) => {
