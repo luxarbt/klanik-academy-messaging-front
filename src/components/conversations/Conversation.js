@@ -31,12 +31,15 @@ export default function Conversation({ userRequested }) {
     getMessages();
   }, [userData.user._id, userRequested._id, userRequested.conversationId]);
 
+  console.log(messages);
+
   const onMessageSubmit = async (e) => {
     e.preventDefault();
     const newMessage = {
       sender: userData.user._id,
       receiver: userRequested._id,
       message,
+      conversation: userRequested.conversationId,
     };
     Axios.post("http://localhost:9000/messages/send", newMessage);
     setMessages((arrayMessages) => [...arrayMessages, newMessage]);

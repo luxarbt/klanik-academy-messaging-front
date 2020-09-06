@@ -21,6 +21,19 @@ export default function Conversations() {
                 }
               );
               usersRequesting.data.conversationId = conversation._id;
+              try {
+                const lastMessage = await Axios.get(
+                  "http://localhost:9000/messages/get-last-message",
+                  {
+                    params: {
+                      conversation: usersRequesting.data.conversationId,
+                    },
+                  }
+                );
+                usersRequesting.data.lastMessage = lastMessage.data[0].message;
+              } catch (err) {
+                console.log(err);
+              }
               setUsers((arrayUser) => [...arrayUser, usersRequesting]);
             } catch (err) {
               console.log(err);
@@ -55,6 +68,7 @@ export default function Conversations() {
                 <Link to={{ pathname: "/conv", state: user.data }}>
                   {user.data.name} {user.data.surname}
                 </Link>
+                <p>{user.data.lastMessage}</p>
               </>
             ))
           : ""}
