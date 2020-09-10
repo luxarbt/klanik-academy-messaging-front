@@ -24,12 +24,15 @@ export default function Conversation({ userRequested }) {
         },
       }).then((response) => {
         response.data.map(async (msg) => {
+          const sender = await Axios.get("http://localhost:9000/users/user", {
+            params: { user: msg.sender },
+          });
           setMessages((arrayMessages) => [
             ...arrayMessages,
             new Message({
               id: msg.sender,
               message: msg.message,
-              senderName: msg.sender,
+              senderName: `${sender.data.name} ${sender.data.surname}`,
             }),
           ]);
         });
@@ -46,20 +49,26 @@ export default function Conversation({ userRequested }) {
             },
           }
         );
+        const sender = await Axios.get("http://localhost:9000/users/user", {
+          params: { user: lastMessage.data[0].sender },
+        });
         NotificationManager.info(
-          `New message from : ${lastMessage.data[0].sender} : ${lastMessage.data[0].message}`
+          `New message from : ${sender.data.name} ${sender.data.surname} : ${lastMessage.data[0].message}`
         );
       } catch (err) {
         console.log(err);
       }
       setMessages([]);
-      data.map((msg) => {
+      data.map(async (msg) => {
+        const sender = await Axios.get("http://localhost:9000/users/user", {
+          params: { user: msg.sender },
+        });
         return setMessages((arrayMessages) => [
           ...arrayMessages,
           new Message({
             id: msg.sender,
             message: msg.message,
-            senderName: msg.sender,
+            senderName: `${sender.data.name} ${sender.data.surname}`,
           }),
         ]);
       });
