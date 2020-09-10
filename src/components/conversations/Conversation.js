@@ -2,7 +2,10 @@ import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { ChatFeed, Message } from "react-chat-ui";
 import Axios from "axios";
+import io from "socket.io-client";
 import UserContext from "../../context/UserContext";
+
+const socket = io("http://localhost:9000");
 
 export default function Conversation({ userRequested }) {
   const { userData } = useContext(UserContext);
@@ -29,9 +32,20 @@ export default function Conversation({ userRequested }) {
       });
     };
     getMessages();
-  }, [userData.user._id, userRequested._id, userRequested.conversationId]);
-
-  console.log(messages);
+    socket.on("GetMessages", async (data) => {
+      setMessages([]);
+      data.map((msg) => {
+        return setMessages((arrayMessages) => [
+          ...arrayMessages,
+          new Message({
+            id: msg.sender,
+            message: msg.message,
+            senderName: msg.sender,
+          }),
+        ]);
+      });
+    });
+  }, [userRequested.conversationId]);
 
   const onMessageSubmit = async (e) => {
     e.preventDefault();
@@ -41,7 +55,11 @@ export default function Conversation({ userRequested }) {
       message,
       conversation: userRequested.conversationId,
     };
-    Axios.post("http://localhost:9000/messages/send", newMessage);
+    await Axios.post("http://localhost:9000/messages/send", newMessage);
+    socket.emit("newMessage", {
+      message,
+      conversation: userRequested.conversationId,
+    });
     setMessages((arrayMessages) => [...arrayMessages, newMessage]);
   };
 
