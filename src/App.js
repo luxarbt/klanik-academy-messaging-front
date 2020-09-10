@@ -10,6 +10,7 @@ import Conv from "./components/pages/Conv";
 
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./style.css";
+import "react-notifications/lib/notifications.css";
 
 export default function App() {
   const [userData, setUserData] = useState({

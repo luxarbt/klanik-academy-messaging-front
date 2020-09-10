@@ -3,6 +3,10 @@ import PropTypes from "prop-types";
 import { ChatFeed, Message } from "react-chat-ui";
 import Axios from "axios";
 import io from "socket.io-client";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
 import UserContext from "../../context/UserContext";
 
 const socket = io("http://localhost:9000");
@@ -33,6 +37,21 @@ export default function Conversation({ userRequested }) {
     };
     getMessages();
     socket.on("GetMessages", async (data) => {
+      try {
+        const lastMessage = await Axios.get(
+          "http://localhost:9000/messages/get-last-message",
+          {
+            params: {
+              conversation: userRequested.conversationId,
+            },
+          }
+        );
+        NotificationManager.info(
+          `New message from : ${lastMessage.data[0].sender} : ${lastMessage.data[0].message}`
+        );
+      } catch (err) {
+        console.log(err);
+      }
       setMessages([]);
       data.map((msg) => {
         return setMessages((arrayMessages) => [
@@ -69,6 +88,7 @@ export default function Conversation({ userRequested }) {
 
   return (
     <div className="chatfeed-wrapper">
+      <NotificationContainer />
       <ChatFeed
         maxHeight={250}
         messages={messages} // Boolean: list of message objects
