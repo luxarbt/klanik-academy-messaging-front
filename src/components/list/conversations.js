@@ -14,40 +14,47 @@ export default function Conversations() {
         response.data.map(async (conversation) => {
           if (conversation.firstUser === userData.user._id) {
             try {
-              const usersRequesting = await Axios.get(
-                "http://localhost:9000/users/user",
-                {
-                  params: { user: conversation.secondUser },
-                }
-              );
-              usersRequesting.data.conversationId = conversation._id;
+              const user = await Axios.get("http://localhost:9000/users/user", {
+                params: { user: conversation.secondUser },
+              });
+              user.data.conversationId = conversation._id;
               try {
                 const lastMessage = await Axios.get(
                   "http://localhost:9000/messages/get-last-message",
                   {
                     params: {
-                      conversation: usersRequesting.data.conversationId,
+                      conversation: user.data.conversationId,
                     },
                   }
                 );
-                usersRequesting.data.lastMessage = lastMessage.data[0].message;
+                user.data.lastMessage = lastMessage.data[0].message;
               } catch (err) {
                 console.log(err);
               }
-              setUsers((arrayUser) => [...arrayUser, usersRequesting]);
+              setUsers((arrayUser) => [...arrayUser, user]);
             } catch (err) {
               console.log(err);
             }
           } else if (conversation.secondUser === userData.user._id) {
             try {
-              const usersRequesting = await Axios.get(
-                "http://localhost:9000/users/user",
-                {
-                  params: { user: conversation.firstUser },
-                }
-              );
-              usersRequesting.data.conversationId = conversation._id;
-              setUsers((arrayUser) => [...arrayUser, usersRequesting]);
+              const user = await Axios.get("http://localhost:9000/users/user", {
+                params: { user: conversation.secondUser },
+              });
+              user.data.conversationId = conversation._id;
+              try {
+                const lastMessage = await Axios.get(
+                  "http://localhost:9000/messages/get-last-message",
+                  {
+                    params: {
+                      conversation: user.data.conversationId,
+                    },
+                  }
+                );
+                user.data.lastMessage = lastMessage.data[0].message;
+              } catch (err) {
+                console.log(err);
+              }
+              setUsers((arrayUser) => [...arrayUser, user]);
             } catch (err) {
               console.log(err);
             }
