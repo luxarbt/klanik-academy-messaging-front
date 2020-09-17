@@ -30,7 +30,7 @@ export default function Conversation({ userRequested }) {
           setMessages((arrayMessages) => [
             ...arrayMessages,
             new Message({
-              id: msg.sender,
+              id: msg.sender === userData.user._id ? 0 : "",
               message: msg.message,
               senderName: `${sender.data.name} ${sender.data.surname}`,
             }),
@@ -66,14 +66,14 @@ export default function Conversation({ userRequested }) {
         return setMessages((arrayMessages) => [
           ...arrayMessages,
           new Message({
-            id: msg.sender,
+            id: msg.sender === userData.user._id ? 0 : "",
             message: msg.message,
             senderName: `${sender.data.name} ${sender.data.surname}`,
           }),
         ]);
       });
     });
-  }, [userRequested.conversationId]);
+  }, [userData.user._id, userRequested.conversationId]);
 
   const onMessageSubmit = async (e) => {
     e.preventDefault();
@@ -88,7 +88,14 @@ export default function Conversation({ userRequested }) {
       message,
       conversation: userRequested.conversationId,
     });
-    setMessages((arrayMessages) => [...arrayMessages, newMessage]);
+    setMessages((arrayMessages) => [
+      ...arrayMessages,
+      new Message({
+        id: 0,
+        message,
+        senderName: `${userData.user.name} ${userData.user.surname}`,
+      }),
+    ]);
   };
 
   const handleChange = (e) => {
