@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
 import PropTypes from "prop-types";
 import UserContext from "../../context/UserContext";
+import ChatRequestManager from "../../services/chatRequestService";
 
 export default function Users({ users }) {
   const { userData } = useContext(UserContext);
@@ -22,7 +23,6 @@ export default function Users({ users }) {
       };
       await Axios.post("http://localhost:9000/chat/newrequest", newChatRequest);
       setDisplayUser((arrayUser) => [...arrayUser, user._id]);
-      // TODO : Send notification
     } catch (err) {
       console.log(err);
     }
@@ -43,6 +43,8 @@ export default function Users({ users }) {
             return arrayRequestId.push(chatRequest.userRequested);
           });
           setChatRequests(arrayRequestId);
+          const chatRequestSingleton = ChatRequestManager.getInstance();
+          chatRequestSingleton.setChatRequests(arrayRequestId);
         }
       );
     };

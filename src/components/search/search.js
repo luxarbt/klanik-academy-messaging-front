@@ -3,6 +3,7 @@ import Axios from "axios";
 import Filter from "./filter";
 import Users from "./users";
 import UserContext from "../../context/UserContext";
+import ChatRequestManager from "../../services/chatRequestService";
 
 export default function Search() {
   const [word, setWord] = useState("");
@@ -12,10 +13,13 @@ export default function Search() {
   const currentUser = userData.user || "";
 
   useEffect(() => {
+    const chatRequestSingleton = ChatRequestManager.getInstance();
     const getUsers = async () => {
       const result = await Axios.get("http://localhost:9000/users/all");
       const resultFiltered = result.data.filter(
-        (user) => user._id !== currentUser._id
+        (user) =>
+          user._id !== currentUser._id &&
+          !chatRequestSingleton.getChatRequests().includes(user._id)
       );
       setUsers(resultFiltered);
     };
