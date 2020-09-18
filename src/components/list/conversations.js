@@ -38,7 +38,7 @@ export default function Conversations() {
           } else if (conversation.secondUser === userData.user._id) {
             try {
               const user = await Axios.get("http://localhost:9000/users/user", {
-                params: { user: conversation.secondUser },
+                params: { user: conversation.firstUser },
               });
               user.data.conversationId = conversation._id;
               try {
