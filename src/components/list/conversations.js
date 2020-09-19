@@ -60,7 +60,7 @@ export default function Conversations() {
       });
     };
     getAllConversations();
-  }, [socket, userData.user._id]);
+  }, [userData.user._id]);
 
   return (
     <div>
