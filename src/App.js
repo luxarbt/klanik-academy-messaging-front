@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import io from "socket.io-client";
 import Axios from "axios";
 import Header from "./components/layout/Header";
 import Home from "./components/pages/Home";
@@ -11,6 +12,7 @@ import Conv from "./components/pages/Conv";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./style.css";
 import "react-notifications/lib/notifications.css";
+import SocketManager from "./services/socketService";
 
 export default function App() {
   const [userData, setUserData] = useState({
@@ -18,7 +20,12 @@ export default function App() {
     user: undefined,
   });
 
+  const socket = io("http://localhost:9000");
+
   useEffect(() => {
+    const socketSingleton = SocketManager.getInstance();
+    socketSingleton.setSocket(socket);
+
     const checkLoggedIn = async () => {
       let token = localStorage.getItem("auth-token");
       if (token === null) {
@@ -47,7 +54,7 @@ export default function App() {
     };
 
     checkLoggedIn();
-  }, []);
+  }, [socket]);
 
   return (
     <>

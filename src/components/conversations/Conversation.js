@@ -2,19 +2,20 @@ import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { ChatFeed, Message } from "react-chat-ui";
 import Axios from "axios";
-import io from "socket.io-client";
 import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
 import UserContext from "../../context/UserContext";
-
-const socket = io("http://localhost:9000");
+import SocketManager from "../../services/socketService";
 
 export default function Conversation({ userRequested }) {
   const { userData } = useContext(UserContext);
   const [message, setMessage] = useState();
   const [messages, setMessages] = useState([]);
+
+  const socketSingleton = SocketManager.getInstance();
+  const socket = socketSingleton.getSocket();
 
   useEffect(() => {
     const getMessages = async () => {
@@ -73,7 +74,7 @@ export default function Conversation({ userRequested }) {
         ]);
       });
     });
-  }, [userData.user._id, userRequested.conversationId]);
+  }, [socket, userData.user._id, userRequested.conversationId]);
 
   const onMessageSubmit = async (e) => {
     e.preventDefault();

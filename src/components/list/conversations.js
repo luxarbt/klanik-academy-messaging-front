@@ -2,35 +2,46 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 import UserContext from "../../context/UserContext";
+import SocketManager from "../../services/socketService";
 
 export default function Conversations() {
   const { userData } = useContext(UserContext);
 
   const [users, setUsers] = useState([]);
+  const [lastMsg, setLastMsg] = useState();
+
+  const socketSingleton = SocketManager.getInstance();
+  const socket = socketSingleton.getSocket();
+
+  const getLastMessage = async (conversation) => {
+    try {
+      const lastMessage = await Axios.get(
+        "http://localhost:9000/messages/get-last-message",
+        {
+          params: {
+            conversation: conversation._id,
+          },
+        }
+      );
+      setLastMsg(lastMessage.data[0].message);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    const apiCall = async () => {
+    const getAllConversations = async () => {
       Axios.get("http://localhost:9000/conversation/all").then((response) => {
         response.data.map(async (conversation) => {
+          getLastMessage(conversation);
+          socket.on("GetMessages", async () => {
+            getLastMessage(conversation);
+          });
           if (conversation.firstUser === userData.user._id) {
             try {
               const user = await Axios.get("http://localhost:9000/users/user", {
                 params: { user: conversation.secondUser },
               });
-              user.data.conversationId = conversation._id;
-              try {
-                const lastMessage = await Axios.get(
-                  "http://localhost:9000/messages/get-last-message",
-                  {
-                    params: {
-                      conversation: user.data.conversationId,
-                    },
-                  }
-                );
-                user.data.lastMessage = lastMessage.data[0].message;
-              } catch (err) {
-                console.log(err);
-              }
               setUsers((arrayUser) => [...arrayUser, user]);
             } catch (err) {
               console.log(err);
@@ -40,20 +51,6 @@ export default function Conversations() {
               const user = await Axios.get("http://localhost:9000/users/user", {
                 params: { user: conversation.firstUser },
               });
-              user.data.conversationId = conversation._id;
-              try {
-                const lastMessage = await Axios.get(
-                  "http://localhost:9000/messages/get-last-message",
-                  {
-                    params: {
-                      conversation: user.data.conversationId,
-                    },
-                  }
-                );
-                user.data.lastMessage = lastMessage.data[0].message;
-              } catch (err) {
-                console.log(err);
-              }
               setUsers((arrayUser) => [...arrayUser, user]);
             } catch (err) {
               console.log(err);
@@ -62,8 +59,8 @@ export default function Conversations() {
         });
       });
     };
-    apiCall();
-  }, [userData.user._id]);
+    getAllConversations();
+  }, [socket, userData.user._id]);
 
   return (
     <div>
@@ -75,10 +72,12 @@ export default function Conversations() {
                 <Link to={{ pathname: "/conv", state: user.data }}>
                   {user.data.name} {user.data.surname}
                 </Link>
-                <p>{user.data.lastMessage}</p>
               </>
             ))
           : ""}
+        <p>
+          <b>{lastMsg}</b>
+        </p>
       </p>
     </div>
   );
